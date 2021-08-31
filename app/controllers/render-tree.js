@@ -8,6 +8,7 @@ import { and, equal } from '@ember/object/computed';
 
 export default Controller.extend({
   initialEmpty: false,
+  shouldHighlightRender: false,
   modelEmpty: equal('model.length', 0),
   showEmpty: and('initialEmpty', 'modelEmpty'),
 
@@ -61,6 +62,7 @@ export default Controller.extend({
     'model.@each.name',
     'search',
     function () {
+      debugger;
       if (isEmpty(this.escapedSearch)) {
         return this.model;
       }
@@ -74,6 +76,10 @@ export default Controller.extend({
 
   closeWarning: action(function () {
     this.set('isWarningClosed', true);
+  }),
+
+  updateshouldHighlightRender: action(function (bool) {
+    this.set('shouldHighlightRender', bool)
   }),
 });
 

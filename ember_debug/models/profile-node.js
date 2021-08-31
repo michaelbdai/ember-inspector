@@ -8,7 +8,10 @@ import Ember from '../utils/ember';
 const { get, guidFor } = Ember;
 
 const ProfileNode = function (start, payload, parent, now) {
+
+
   let name;
+  let elementId;
   this.start = start;
   this.timestamp = now || Date.now();
 
@@ -18,6 +21,12 @@ const ProfileNode = function (start, payload, parent, now) {
     } else if (payload.view) {
       const view = payload.view;
       name = get(view, 'instrumentDisplay') || get(view, '_debugContainerKey');
+      elementId = get(view, 'elementId')
+
+      if (elementId) {
+        this.elementId = elementId
+        debugger;
+      }
       if (name) {
         name = name.replace(/^view:/, '');
       }

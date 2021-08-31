@@ -17,4 +17,15 @@
     @value={{this.searchValue}}
     class="js-render-profiles-search"
   />
+  <div class="toolbar__checkbox js-filter-hide-empty-model-types">
+    <label>
+      <Input
+        data-test-options-highlight-render
+        @type="checkbox"
+        @checked={{this.shouldHighlightRender}}
+        {{on "change" (fn this.updateshouldHighlightRender (not this.shouldHighlightRender))}}
+      />
+      Highlight render
+    </label>
+  </div>
 </div>

@@ -20,5 +20,10 @@ export default {
       visible: true,
       numeric: true,
     },
+    {
+      id: 'elementId',
+      name: 'ElementId',
+      visible: true,
+    },
   ],
 };
