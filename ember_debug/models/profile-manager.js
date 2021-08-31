@@ -15,6 +15,7 @@ export default class ProfileManager {
     this.currentSet = [];
     this._profilesAddedCallbacks = [];
     this.queue = [];
+    this.shouldHighlightRender = false;
   }
 
   began(timestamp, payload, now) {
@@ -78,6 +79,10 @@ export default class ProfileManager {
     if (index > -1) {
       this._profilesAddedCallbacks.splice(index, 1);
     }
+  }
+
+  updateShouldHighlightRender(message) {
+    this.shouldHighlightRender = message.shouldHighlightRender
   }
 
   _flush() {

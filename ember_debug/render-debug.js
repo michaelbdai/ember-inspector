@@ -3,7 +3,7 @@ import PortMixin from 'ember-debug/mixins/port-mixin';
 import ProfileManager from './models/profile-manager';
 import Ember from './utils/ember';
 
-const { subscribe, Object: EmberObject } = Ember;
+const { subscribe, Object: EmberObject, get } = Ember;
 
 // Initial setup, that has to occur before the EmberObject init for some reason
 let profileManager = new ProfileManager();
@@ -12,12 +12,12 @@ _subscribeToRenderEvents();
 export default EmberObject.extend(PortMixin, {
   namespace: null,
   portNamespace: 'render',
+  shouldHighlightRender: false,
 
   profileManager,
 
   init() {
     this._super();
-
     this.profileManager.wrapForErrors = (context, callback) =>
       this.port.wrap(() => callback.call(context));
     this.profileManager.onProfilesAdded(this, this._updateComponentTree);
@@ -35,6 +35,23 @@ export default EmberObject.extend(PortMixin, {
   },
 
   sendAdded(profiles) {
+    const { viewDebug } = this.namespace
+    // debugger;
+    const findGuid = (profiles) => {
+      profiles.forEach((profile) => {
+        if (profile.viewGuid) {
+          viewDebug.viewInspection.show(profile.viewGuid, true)
+        }
+        if (profile.children) {
+          findGuid(profile.children)
+        }
+      })
+    }
+    if (this.shouldHighlightRender) {
+      findGuid(profiles)
+    }
+
+
     this.sendMessage('profilesAdded', { profiles });
   },
 
@@ -61,6 +78,10 @@ export default EmberObject.extend(PortMixin, {
         profiles: this.profileManager.profiles,
       });
       this.profileManager.onProfilesAdded(this, this.sendAdded);
+    },
+
+    updateShouldHighlightRender(message) {
+      this.shouldHighlightRender = message.shouldHighlightRender;
     },
   },
 });

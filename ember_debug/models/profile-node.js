@@ -11,6 +11,7 @@ const ProfileNode = function (start, payload, parent, now) {
   let name;
   this.start = start;
   this.timestamp = now || Date.now();
+  this.viewGuid = null;
 
   if (payload) {
     if (payload.template) {
@@ -21,7 +22,23 @@ const ProfileNode = function (start, payload, parent, now) {
       if (name) {
         name = name.replace(/^view:/, '');
       }
-      this.viewGuid = guidFor(view);
+      const elementId = get(view, 'elementId');
+      if (elementId) {
+        const numberStr = elementId.substring(5);
+        const number = parseInt(numberStr)
+        if (number) {
+          this.elementId = elementId
+          // const element = document.getElementById(elementId);
+          // if (element) {
+          // const outline = element.style.outline;
+          //   element.style.outline  = '0.5px solid red';
+          //   setTimeout(()=> {
+          //     element.style.outline  = outline && 'none';
+          //   }, 1000)
+          // }
+        }
+      }
+      this.viewGuid = get(view, 'elementId');
     }
 
     if (!name && payload.object) {
@@ -29,12 +46,12 @@ const ProfileNode = function (start, payload, parent, now) {
         .toString()
         .replace(/:?:ember\d+>$/, '')
         .replace(/^</, '');
-      if (!this.viewGuid) {
-        const match = name.match(/:(ember\d+)>$/);
-        if (match && match.length > 1) {
-          this.viewGuid = match[1];
-        }
-      }
+      // if (!this.viewGuid) {
+      //   const match = name.match(/:(ember\d+)>$/);
+      //   if (match && match.length > 1) {
+      //     this.viewGuid = match[1];
+      //   }
+      // }
     }
   }
 
