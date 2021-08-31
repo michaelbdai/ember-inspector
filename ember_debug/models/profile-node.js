@@ -7,10 +7,11 @@ import Ember from '../utils/ember';
 
 const { get, guidFor } = Ember;
 
-const ProfileNode = function (start, payload, parent, now) {
+const ProfileNode = function (start, payload, parent, now, shouldHighlightRender) {
   let name;
   this.start = start;
   this.timestamp = now || Date.now();
+  this.shouldHighlightRender = shouldHighlightRender;
 
   if (payload) {
     if (payload.template) {
@@ -20,6 +21,21 @@ const ProfileNode = function (start, payload, parent, now) {
       name = get(view, 'instrumentDisplay') || get(view, '_debugContainerKey');
       if (name) {
         name = name.replace(/^view:/, '');
+      }
+      const elementId = get(view, 'elementId');
+      if (elementId && this.shouldHighlightRender) {
+        const numberStr = elementId.substring(5);
+        const number = parseInt(numberStr)
+        if (number) {
+          const element = document.getElementById(elementId);
+          if (element) {
+          const outline = element.style.outline;
+            element.style.outline  = '0.5px solid red';
+            setTimeout(()=> {
+              element.style.outline  = outline && 'none';
+            }, 1000)
+          }
+        }
       }
       this.viewGuid = guidFor(view);
     }

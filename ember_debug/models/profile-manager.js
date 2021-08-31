@@ -15,11 +15,12 @@ export default class ProfileManager {
     this.currentSet = [];
     this._profilesAddedCallbacks = [];
     this.queue = [];
+    this.shouldHighlightRender = false;
   }
 
   began(timestamp, payload, now) {
     return this.wrapForErrors(this, function () {
-      this.current = new ProfileNode(timestamp, payload, this.current, now);
+      this.current = new ProfileNode(timestamp, payload, this.current, now, this.shouldHighlightRender);
       return this.current;
     });
   }
@@ -78,6 +79,10 @@ export default class ProfileManager {
     if (index > -1) {
       this._profilesAddedCallbacks.splice(index, 1);
     }
+  }
+
+  updateShouldHighlightRender(message) {
+    this.shouldHighlightRender = message.shouldHighlightRender
   }
 
   _flush() {

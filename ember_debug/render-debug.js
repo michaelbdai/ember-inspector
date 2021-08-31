@@ -62,6 +62,10 @@ export default EmberObject.extend(PortMixin, {
       });
       this.profileManager.onProfilesAdded(this, this.sendAdded);
     },
+
+    updateShouldHighlightRender(message) {
+      this.profileManager.updateShouldHighlightRender(message);
+    },
   },
 });
 
