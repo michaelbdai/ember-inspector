@@ -46,7 +46,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
         };
       });
       window.EmberInspector = Ember.EmberInspectorDebugger = requireModule('ember-debug/main')['default'];
-      Ember.EmberInspectorDebugger.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
+      Ember.EmberInspectorDebugger?.Adapter = requireModule('ember-debug/adapters/' + adapter)['default'];
 
       onApplicationStart(function appStarted(instance) {
         let app = instance.application;
@@ -64,15 +64,15 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
           instance.reopen({
             // Clean up on instance destruction
             willDestroy() {
-              if (Ember.EmberInspectorDebugger.get('owner') === instance) {
-                Ember.EmberInspectorDebugger.destroyContainer();
-                Ember.EmberInspectorDebugger.clear();
+              if (Ember.EmberInspectorDebugger?.get('owner') === instance) {
+                Ember.EmberInspectorDebugger?.destroyContainer();
+                Ember.EmberInspectorDebugger?.clear();
               }
               return this._super.apply(this, arguments);
             }
           });
 
-          if (!Ember.EmberInspectorDebugger._application) {
+          if (!Ember.EmberInspectorDebugger?._application) {
             bootEmberInspector(instance);
           }
         }
@@ -85,9 +85,9 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
     appInstance.__inspector__booted = true;
 
     // Boot the inspector (or re-boot if already booted, for example in tests)
-    Ember.EmberInspectorDebugger.set('_application', appInstance.application);
-    Ember.EmberInspectorDebugger.set('owner', appInstance);
-    Ember.EmberInspectorDebugger.start(true);
+    Ember.EmberInspectorDebugger?.set('_application', appInstance.application);
+    Ember.EmberInspectorDebugger?.set('owner', appInstance);
+    Ember.EmberInspectorDebugger?.start(true);
   }
 
   function onEmberReady(callback) {
@@ -146,7 +146,7 @@ var EMBER_VERSIONS_SUPPORTED = {{EMBER_VERSIONS_SUPPORTED}};
       }
 
       if (message.type === 'app-selected') {
-        let current = Ember.EmberInspectorDebugger._application;
+        let current = Ember.EmberInspectorDebugger?._application;
         let selected = getApplications().find(app => Ember.guidFor(app) === message.applicationId);
 
         if (current !== selected && selected.__deprecatedInstance__) {
