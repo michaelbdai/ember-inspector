@@ -7,6 +7,41 @@ import Ember from '../utils/ember';
 
 const { get, guidFor } = Ember;
 
+function findRoots({ first, last, parent }) {
+
+  debugger;
+  const roots = [];
+  const closest = parent.childNodes;
+  if (first.node === last.node)
+    return [first.node];
+
+  let start = null;
+  let end = null;
+  for (let i = 0; i < closest.length; i++) {
+    if (closest.item(i) === first.node)
+      start = i;
+    else if (closest.item(i) === last.node)
+      end = i;
+  }
+
+  if (start === null || end === null)
+    return [];
+
+
+  for (let i = start; i <= end; i++)
+    roots.push(closest.item(i));
+
+
+  return roots.filter((el) => {
+      if (el.nodeType === 3) {
+          if (el.nodeValue.trim() === '') {
+              return false;
+          }
+      }
+      return el;
+  })
+}
+
 const ProfileNode = function (start, payload, parent, now) {
   let name;
   this.start = start;
@@ -17,6 +52,9 @@ const ProfileNode = function (start, payload, parent, now) {
       name = payload.template;
     } else if (payload.view) {
       const view = payload.view;
+      const symbols = Object.getOwnPropertySymbols(view)
+      const bounds = view[symbols.find(sym => sym.description === "BOUNDS")]
+      this.elements = findRoots(bounds);
       name = get(view, 'instrumentDisplay') || get(view, '_debugContainerKey');
       if (name) {
         name = name.replace(/^view:/, '');
