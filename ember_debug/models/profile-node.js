@@ -5,7 +5,7 @@
 **/
 import { get } from '../utils/ember/object';
 import { guidFor } from '../utils/ember/object/internals';
-const ProfileNode = function (start, payload, parent, now) {
+const ProfileNode = function (start, payload, parent, now, hasRenderedComponent) {
   let name;
   this.start = start;
   this.timestamp = now || Date.now();
@@ -37,6 +37,9 @@ const ProfileNode = function (start, payload, parent, now) {
   }
 
   this.name = name || 'Unknown view';
+  if (hasRenderedComponent) {
+    this.name += ' *';
+  }
 
   if (parent) {
     this.parent = parent;

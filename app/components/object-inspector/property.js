@@ -1,4 +1,4 @@
-import { action, computed } from '@ember/object';
+import { action, computed, get } from '@ember/object';
 import Component from '@ember/component';
 import { equal, alias, and } from '@ember/object/computed';
 import { next } from '@ember/runloop';
@@ -53,7 +53,7 @@ export default Component.extend({
     'isOverridden',
     'model.{isExpensive,isGetter}',
     function () {
-      if (this.get('isOverridden')) return false;
+      if (this.isOverridden) return false;
       if (
         !this.get('isComputedProperty') &&
         this.get('model.isGetter') &&

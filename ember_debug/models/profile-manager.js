@@ -80,10 +80,11 @@ export default class ProfileManager {
 
   began(timestamp, payload, now) {
     return this.wrapForErrors(this, function () {
-      this.current = new ProfileNode(timestamp, payload, this.current, now);
+      let hasRenderedComponent = false;
       if (this.shouldHighlightRender && payload.view) {
-        this._highLightView(payload.view);
+        hasRenderedComponent = this._highLightView(payload.view, payload.initialRender);
       }
+      this.current = new ProfileNode(timestamp, payload, this.current, now, hasRenderedComponent);
       this.current.isHighlightEnabled = this.isHighlightEnabled;
       return this.current;
     });
@@ -110,7 +111,7 @@ export default class ProfileManager {
     return callback.call(context);
   }
 
-  _highLightView(view) {
+  _highLightView(view, initialRender) {
     const symbols = Object.getOwnPropertySymbols(view);
     const bounds = view[symbols.find((sym) => sym.description === 'BOUNDS')];
     if (!bounds) return;
@@ -118,8 +119,9 @@ export default class ProfileManager {
     const elements = findRoots(bounds);
 
     elements.forEach((node) => {
-      this._renderHighlight(node);
+      this._renderHighlight(node, initialRender);
     });
+    return elements.length > 0;
   }
 
   /**
@@ -185,7 +187,7 @@ export default class ProfileManager {
     }, 500);
   }
 
-  _constructHighlight(renderedNode) {
+  _constructHighlight(renderedNode, initialRender) {
     const rect = renderedNode.getBoundingClientRect();
     const highlight = makeHighlight();
 
@@ -198,16 +200,19 @@ export default class ProfileManager {
       style.left = `${left + scrollX}px`;
       style.width = `${width}px`;
       style.height = `${height}px`;
+      if (initialRender) {
+        style.borderColor = 'purple';
+      }
     }
     return highlight;
   }
 
-  _renderHighlight(renderedNode) {
+  _renderHighlight(renderedNode, initialRender) {
     if (!renderedNode?.getBoundingClientRect) {
       return;
     }
 
-    const highlight = this._constructHighlight(renderedNode);
+    const highlight = this._constructHighlight(renderedNode, initialRender);
 
     this._addHighlight({ el: highlight });
   }
