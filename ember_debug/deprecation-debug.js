@@ -3,7 +3,7 @@ import SourceMap from 'ember-debug/libs/source-map';
 
 import { A } from './utils/ember/array';
 import { registerDeprecationHandler } from './utils/ember/debug';
-import { computed } from './utils/ember/object';
+import { computed, get } from './utils/ember/object';
 import { readOnly } from './utils/ember/object/computed';
 import { guidFor } from './utils/ember/object/internals';
 import { cancel, debounce } from './utils/ember/runloop';
@@ -39,7 +39,7 @@ export default DebugPort.extend({
   fetchSourceMap(stackStr) {
     if (
       this.emberCliConfig &&
-      this.get('emberCliConfig.environment') === 'development'
+      get(this, 'emberCliConfig.environment') === 'development'
     ) {
       return this.sourceMap.map(stackStr).then(
         (mapped) => {
@@ -48,7 +48,7 @@ export default DebugPort.extend({
               (item) =>
                 item.source &&
                 !!item.source.match(
-                  new RegExp(this.get('emberCliConfig.modulePrefix'))
+                  new RegExp(get(this, 'emberCliConfig.modulePrefix'))
                 )
             );
 
@@ -137,7 +137,8 @@ export default DebugPort.extend({
 
     this.sendMessage('count', {
       count:
-        this.get('deprecations.length') + this.get('deprecationsToSend.length'),
+        get(this, 'deprecations.length') +
+        get(this, 'deprecationsToSend.length'),
     });
   },
 
@@ -177,7 +178,7 @@ export default DebugPort.extend({
     clear() {
       cancel(this.debounce);
       this.deprecations.clear();
-      this.set('groupedDeprecations', {});
+      this.groupedDeprecations = {};
       this.sendCount();
     },
 

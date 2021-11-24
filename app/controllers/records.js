@@ -21,7 +21,7 @@ export default Controller.extend({
   }),
 
   recordToString(record) {
-    return (get(record, 'searchKeywords') || []).join(' ').toLowerCase();
+    return (record.searchKeywords || []).join(' ').toLowerCase();
   },
 
   /**
@@ -40,7 +40,7 @@ export default Controller.extend({
    * @type {Object}
    */
   columns: computed('modelType.columns', function () {
-    return this.get('modelType.columns').map(({ desc, name }) => ({
+    return get(this, 'modelType.columns').map(({ desc, name }) => ({
       valuePath: `columnValues.${name}`,
       name: desc,
     }));
@@ -86,7 +86,7 @@ export default Controller.extend({
 
   inspectModel: action(function ([record]) {
     this.set('selection', record);
-    this.port.send('data:inspectModel', { objectId: get(record, 'objectId') });
+    this.port.send('data:inspectModel', { objectId: record.objectId });
   }),
 
   updateSorts: action(function (newSorts) {

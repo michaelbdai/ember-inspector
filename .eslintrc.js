@@ -29,6 +29,8 @@ module.exports = {
 
     'ember/no-jquery': 'error',
 
+    'ember/no-get': 'warn',
+
     // Temporarily turn these off
     'ember/avoid-leaking-state-in-ember-objects': 'off',
     'ember/classic-decorator-hooks': 'off',
@@ -38,7 +40,6 @@ module.exports = {
     'ember/no-classic-components': 'off',
     'ember/no-component-lifecycle-hooks': 'off',
     'ember/no-computed-properties-in-native-classes': 'off',
-    'ember/no-get': 'off',
     'ember/no-test-import-export': 'off',
     'ember/require-tagless-components': 'off',
 

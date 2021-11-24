@@ -1,4 +1,4 @@
-import EmberObject from './utils/ember/object';
+import EmberObject, { get } from './utils/ember/object';
 
 export default EmberObject.extend({
   port: null,
@@ -10,7 +10,7 @@ export default EmberObject.extend({
   init() {
     this._super(...arguments);
 
-    this.set('port', this.get('namespace.port'));
+    this.port = get(this, 'namespace.port');
 
     this.setupOrRemovePortListeners('on');
   },

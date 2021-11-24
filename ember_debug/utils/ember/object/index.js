@@ -10,6 +10,6 @@ try {
   EmberObject = Ember.Object;
 }
 
-export let { computed, get, observer, set } = module;
+export let { computed, get, observer, set, setProperties } = module;
 
 export default EmberObject;

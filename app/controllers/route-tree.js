@@ -1,5 +1,5 @@
 import { alias } from '@ember/object/computed';
-import { action, computed, set } from '@ember/object';
+import { action, computed, get, set } from '@ember/object';
 import Controller, { inject as controller } from '@ember/controller';
 import { inject as service } from '@ember/service';
 import checkCurrentRoute from 'ember-inspector/utils/check-current-route';
@@ -27,8 +27,8 @@ export default class RouteTreeController extends Controller {
   get filtered() {
     return this.model.filter((routeItem) => {
       let currentRoute = this.currentRoute;
-      let hideRoutes = this.get('options.hideRoutes');
-      let hideSubstates = this.get('options.hideSubstates');
+      let hideRoutes = get(this, 'options.hideRoutes');
+      let hideSubstates = get(this, 'options.hideSubstates');
 
       if (hideRoutes && currentRoute) {
         return checkCurrentRoute(currentRoute, routeItem.value);

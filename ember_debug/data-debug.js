@@ -1,7 +1,7 @@
 import DebugPort from './debug-port';
 
 import { A } from './utils/ember/array';
-import { computed, set } from './utils/ember/object';
+import { computed, get } from './utils/ember/object';
 import { alias } from './utils/ember/object/computed';
 import { guidFor } from './utils/ember/object/internals';
 
@@ -17,14 +17,14 @@ export default DebugPort.extend({
 
   /* eslint-disable ember/no-side-effects */
   adapter: computed('namespace.owner', function () {
-    const owner = this.get('namespace.owner');
+    const owner = get(this, 'namespace.owner');
 
     // dataAdapter:main is deprecated
     let adapter =
       this._resolve('data-adapter:main') && owner.lookup('data-adapter:main');
     // column limit is now supported at the inspector level
     if (adapter) {
-      set(adapter, 'attributeLimit', 100);
+      adapter.attributeLimit = 100;
       return adapter;
     }
 
@@ -33,7 +33,7 @@ export default DebugPort.extend({
   /* eslint-enable ember/no-side-effects */
 
   _resolve(name) {
-    const owner = this.get('namespace.owner');
+    const owner = get(this, 'namespace.owner');
 
     return owner.resolveRegistration(name);
   },
@@ -156,7 +156,7 @@ export default DebugPort.extend({
       this.releaseRecords();
 
       let typeOrName;
-      if (this.get('adapter.acceptsModelName')) {
+      if (get(this, 'adapter.acceptsModelName')) {
         // Ember >= 1.3
         typeOrName = type.name;
       }

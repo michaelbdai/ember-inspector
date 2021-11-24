@@ -8,7 +8,7 @@
 import Promise from 'ember-debug/models/promise';
 
 import { A } from '../utils/ember/array';
-import EmberObject from '../utils/ember/object';
+import EmberObject, { get, setProperties } from '../utils/ember/object';
 import Evented from '../utils/ember/object/evented';
 import { isNone } from '../utils/ember/utils';
 import RSVP from '../utils/rsvp';
@@ -78,7 +78,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
 
   createPromise(props) {
     let promise = Promise.create(props);
-    let index = this.get('all.length');
+    let index = get(this, 'all.length');
 
     this.all.pushObject(promise);
     this.promiseIndex[promise.get('guid')] = index;
@@ -103,7 +103,7 @@ let PromiseAssembler = EmberObject.extend(Evented, {
   updateOrCreate(guid, properties) {
     let entry = this.find(guid);
     if (entry) {
-      entry.setProperties(properties);
+      setProperties(entry, properties);
     } else {
       properties = Object.assign({}, properties);
       properties.guid = guid;

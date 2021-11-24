@@ -5,7 +5,7 @@ import classify from 'ember-debug/utils/classify';
 import dasherize from 'ember-debug/utils/dasherize';
 
 import Ember from './utils/ember';
-import { computed, observer } from './utils/ember/object';
+import { computed, observer, get } from './utils/ember/object';
 import { readOnly } from './utils/ember/object/computed';
 import { later } from './utils/ember/runloop';
 
@@ -15,11 +15,11 @@ export default DebugPort.extend({
   namespace: null,
 
   router: computed('namespace.owner', function () {
-    return this.get('namespace.owner').lookup('router:main');
+    return get(this, 'namespace.owner').lookup('router:main');
   }),
 
   applicationController: computed('namespace.owner', function () {
-    const container = this.get('namespace.owner');
+    const container = get(this, 'namespace.owner');
     return container.lookup('controller:application');
   }),
 
@@ -41,10 +41,7 @@ export default DebugPort.extend({
 
   // eslint-disable-next-line ember/no-observers
   sendCurrentRoute: observer('currentURL', function () {
-    const { currentPath: name, currentURL: url } = this.getProperties(
-      'currentPath',
-      'currentURL'
-    );
+    const { currentPath: name, currentURL: url } = this;
 
     later(() => {
       this.sendMessage('currentRoute', { name, url });
@@ -72,11 +69,11 @@ export default DebugPort.extend({
   },
 
   getClassName(name, type) {
-    let container = this.get('namespace.owner');
+    let container = get(this, 'namespace.owner');
     let resolver = container.application.__registry__.resolver;
-    let prefix = this.get('emberCliConfig.modulePrefix');
-    let podPrefix = this.get('emberCliConfig.podModulePrefix');
-    let usePodsByDefault = this.get('emberCliConfig.usePodsByDefault');
+    let prefix = get(this, 'emberCliConfig.modulePrefix');
+    let podPrefix = get(this, 'emberCliConfig.podModulePrefix');
+    let usePodsByDefault = get(this, 'emberCliConfig.usePodsByDefault');
     let className;
     if (prefix || podPrefix) {
       // Uses modules
@@ -132,7 +129,7 @@ export default DebugPort.extend({
  */
 function buildSubTree(routeTree, route) {
   let handlers = route.handlers;
-  let owner = this.get('namespace.owner');
+  let owner = get(this, 'namespace.owner');
   let subTree = routeTree;
   let item;
   let routeClassName;

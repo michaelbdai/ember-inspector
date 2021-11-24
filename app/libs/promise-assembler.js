@@ -1,8 +1,8 @@
 import { assert } from '@ember/debug';
 import { later } from '@ember/runloop';
-import EmberObject from '@ember/object';
 import EventedMixin from '@ember/object/evented';
 import Promise from 'ember-inspector/models/promise';
+import EmberObject, { setProperties, get } from '@ember/object';
 
 export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   // Used to track whether current message received
@@ -31,11 +31,11 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
   }
 
   reset() {
-    this.set('topSortMeta', {});
-    this.set('promiseIndex', {});
+    this.topSortMeta = {};
+    this.promiseIndex = {};
     this.topSort.clear();
 
-    this.set('firstMessageReceived', false);
+    this.firstMessageReceived = false;
     let all = this.all;
     // Lazily destroy promises
     // Allows for a smooth transition on deactivate,
@@ -47,7 +47,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
       },
       500
     );
-    this.set('all', []);
+    this.all = [];
   }
 
   destroyPromises(promises) {
@@ -60,7 +60,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     this.rebuildPromises(message.promises);
 
     if (!this.firstMessageReceived) {
-      this.set('firstMessageReceived', true);
+      this.firstMessageReceived = true;
       this.trigger('firstMessageReceived');
     }
   }
@@ -133,7 +133,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
     let guid = props.guid;
     let promise = this.findOrCreate(guid);
 
-    promise.setProperties(props);
+    setProperties(promise, props);
 
     this.updateTopSort(promise);
 
@@ -142,7 +142,7 @@ export default class PromiseAssembler extends EmberObject.extend(EventedMixin) {
 
   createPromise(props) {
     let promise = Promise.create(props);
-    let index = this.get('all.length');
+    let index = get(this, 'all.length');
 
     this.all.pushObject(promise);
     this.promiseIndex[promise.get('guid')] = index;

@@ -1,4 +1,4 @@
-import { action, computed } from '@ember/object';
+import { action, computed, get } from '@ember/object';
 import Component from '@ember/component';
 import { equal, alias, and } from '@ember/object/computed';
 import { next } from '@ember/runloop';
@@ -53,15 +53,15 @@ export default Component.extend({
     'isOverridden',
     'model.{isExpensive,isGetter}',
     function () {
-      if (this.get('isOverridden')) return false;
+      if (this.isOverridden) return false;
       if (
-        !this.get('isComputedProperty') &&
-        this.get('model.isGetter') &&
-        this.get('model.isExpensive')
+        !this.isComputedProperty &&
+        get(this, 'model.isGetter') &&
+        get(this, 'model.isExpensive')
       ) {
         return true;
       }
-      return this.get('isComputedProperty') && !this.get('isCalculated');
+      return this.isComputedProperty && !this.isCalculated;
     }
   ),
 
@@ -71,27 +71,27 @@ export default Component.extend({
     'model.inspect.value',
     'model.{isComputed,isGetter,isProperty,isTracked}',
     function () {
-      if (this.get('isService')) {
+      if (this.isService) {
         return { type: 'service', title: 'Service' };
       }
 
-      if (this.get('isFunction')) {
+      if (this.isFunction) {
         return { type: 'function', title: 'Function' };
       }
 
-      if (this.get('model.isTracked')) {
+      if (get(this, 'model.isTracked')) {
         return { type: 'tracked', title: 'Tracked' };
       }
 
-      if (this.get('model.isProperty')) {
+      if (get(this, 'model.isProperty')) {
         return { type: 'property', title: 'Property' };
       }
 
-      if (this.get('model.isComputed')) {
+      if (get(this, 'model.isComputed')) {
         return { type: 'computed', title: 'Computed' };
       }
 
-      if (this.get('model.isGetter')) {
+      if (get(this, 'model.isGetter')) {
         return { type: 'getter', title: 'Getter' };
       }
 
@@ -124,20 +124,20 @@ export default Component.extend({
       return;
     }
 
-    let value = this.get('model.value.inspect');
+    let value = get(this, 'model.value.inspect');
 
     if (this.isString) {
       value = this._quotedString(value);
     }
+    this.txtValue = value;
 
-    this.set('txtValue', value);
-    this.set('isEdit', true);
+    this.isEdit = true;
   }),
 
   dateClick: action(function () {
-    this.set('dateValue', new Date(this.get('model.value.inspect')));
+    this.dateValue = new Date(get(this, 'model.value.inspect'));
 
-    this.set('isEdit', true);
+    this.isEdit = true;
   }),
 
   _quotedString(value) {
@@ -155,18 +155,18 @@ export default Component.extend({
       dataType = 'date';
     }
 
-    this.saveProperty(this.get('model.name'), realValue, dataType);
+    this.saveProperty(get(this, 'model.name'), realValue, dataType);
     this.finishedEditing();
   }),
 
   finishedEditing: action(function () {
     next(() => {
-      this.set('isEdit', false);
+      this.isEdit = false;
     });
   }),
 
   dateSelected: action(function ([val]) {
-    this.set('dateValue', val);
+    this.dateValue = val;
     this.save();
   }),
 });

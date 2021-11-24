@@ -1,4 +1,4 @@
-import { action, computed } from '@ember/object';
+import { action, computed, get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import PropertiesBase from 'ember-inspector/components/object-inspector/properties-base';
 
@@ -14,17 +14,17 @@ export default PropertiesBase.extend({
   tagName: '',
 
   calculate: action(function (property) {
-    const mixin = findMixin(this.get('model.mixins'), property);
+    const mixin = findMixin(get(this, 'model.mixins'), property);
 
     this.port.send('objectInspector:calculate', {
       objectId: this.model.objectId,
-      mixinIndex: this.get('model.mixins').indexOf(mixin),
+      mixinIndex: get(this, 'model.mixins').indexOf(mixin),
       property: property.name,
     });
   }),
 
   flatPropertyList: computed('customFilter', 'model.mixins', function () {
-    const props = this.get('model.mixins').map(function (mixin) {
+    const props = get(this, 'model.mixins').map(function (mixin) {
       return mixin.properties.filter(function (p) {
         let shoulApplyCustomFilter = this.customFilter
           ? p.name.toLowerCase().indexOf(this.customFilter.toLowerCase()) > -1

@@ -74,11 +74,11 @@ export default class ApplicationRoute extends Route {
   // eslint-enable ember/no-controller-access-in-routes
 
   updateProperty(options) {
-    if (this.get('controller.mixinDetails.mixins')) {
-      const detail = this.get('controller.mixinDetails.mixins').objectAt(
+    if (get(this, 'controller.mixinDetails.mixins')) {
+      const detail = get(this, 'controller.mixinDetails.mixins').objectAt(
         options.mixinIndex
       );
-      let property = get(detail, 'properties').findBy('name', options.property);
+      let property = detail.properties.findBy('name', options.property);
       if (!property) return;
       set(property, 'value', options.value);
       if (options.dependentKeys) {
@@ -88,9 +88,9 @@ export default class ApplicationRoute extends Route {
   }
 
   updateErrors(options) {
-    let mixinDetails = this.get('controller.mixinDetails');
+    let mixinDetails = get(this, 'controller.mixinDetails');
     if (mixinDetails) {
-      if (get(mixinDetails, 'objectId') === options.objectId) {
+      if (mixinDetails.objectId === options.objectId) {
         set(mixinDetails, 'errors', options.errors);
       }
     }

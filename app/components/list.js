@@ -4,7 +4,7 @@ import { task, timeout } from 'ember-concurrency';
 import ResizableColumns from 'ember-inspector/libs/resizable-columns';
 import { inject as service } from '@ember/service';
 import { readOnly, reads } from '@ember/object/computed';
-import { action } from '@ember/object';
+import { action, get, set } from '@ember/object';
 
 const CHECK_HTML = '&#10003;';
 
@@ -109,7 +109,7 @@ export default Component.extend({
     if (newSchema && newSchema !== oldSchema) {
       scheduleOnce('actions', this, this.setupColumns);
     }
-    this.set('oldSchema', newSchema);
+    this.oldSchema = oldSchema;
     return this._super(...arguments);
   },
 
@@ -247,10 +247,10 @@ export default Component.extend({
       tableWidth: this.getTableWidth(),
       minWidth: this.minWidth,
       storage: this.storage,
-      columnSchema: this.get('schema.columns') || [],
+      columnSchema: get(this, 'schema.columns') || [],
     });
     resizableColumns.build();
-    this.set('resizableColumns', resizableColumns);
+    set(this, 'resizableColumns', resizableColumns);
     this.setupContextMenu();
   },
 

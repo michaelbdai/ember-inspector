@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { action, computed, get } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { gt } from '@ember/object/computed';
 
@@ -38,10 +38,8 @@ export default Component.extend({
 
   setCustomFilter: action(function (event) {
     let { value } = event.target;
-    this.setProperties({
-      propDisplayType: 'all',
-      customFilter: value,
-    });
+    this.propDisplayType = 'all';
+    this.customFilter = value;
   }),
 
   clearCustomFilter: action(function () {
@@ -50,7 +48,7 @@ export default Component.extend({
   }),
 
   sendObjectToConsole: action(function (obj) {
-    let objectId = get(obj, 'objectId');
+    let objectId = obj.objectId;
     this.port.send('objectInspector:sendToConsole', {
       objectId,
     });

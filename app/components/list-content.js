@@ -1,5 +1,5 @@
 import { tagName } from '@ember-decorators/component';
-import { computed } from '@ember/object';
+import { computed, get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { htmlSafe } from '@ember/template';
@@ -56,7 +56,7 @@ export default class ListContent extends Component.extend(Evented) {
    * @method setupHeight
    */
   setupHeight() {
-    this.set('contentHeight', this.get('layoutService.contentHeight'));
+    set(this, 'contentHeight', get(this, 'layoutService.contentHeight'));
     this.layoutService.on(
       'content-height-update',
       this,
@@ -78,7 +78,7 @@ export default class ListContent extends Component.extend(Evented) {
    */
   updateContentHeight(height) {
     let previousHeight = this.contentHeight;
-    this.set('contentHeight', height);
+    set(this, 'contentHeight', height);
     if (previousHeight === 0 && height > 0) {
       this.rerender();
     }

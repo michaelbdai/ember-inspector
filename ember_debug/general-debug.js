@@ -2,6 +2,7 @@
 import DebugPort from './debug-port';
 
 import Ember from './utils/ember';
+import { get } from './utils/ember/object';
 
 /**
  * Class that handles gathering general information of the inspected app.
@@ -65,7 +66,7 @@ export default DebugPort.extend({
    */
   sendBooted() {
     this.sendMessage('applicationBooted', {
-      booted: this.get('namespace.owner.__inspector__booted'),
+      booted: get(this, 'namespace.owner.__inspector__booted'),
     });
   },
 

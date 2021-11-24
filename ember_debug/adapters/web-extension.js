@@ -2,6 +2,7 @@ import BasicAdapter from './basic';
 import { typeOf } from '../utils/type-check';
 
 import Ember from '../utils/ember';
+import { get } from './utils/ember/object';
 import { run } from '../utils/ember/runloop';
 
 const { isArray } = Array;
@@ -9,8 +10,8 @@ const { keys } = Object;
 
 export default BasicAdapter.extend({
   init() {
-    this.set('_channel', new MessageChannel());
-    this.set('_chromePort', this.get('_channel.port1'));
+    this._channel = new MessageChannel();
+    this._chromePort = get(this, '_channel.port1');
 
     this._super(...arguments);
   },
@@ -65,7 +66,7 @@ export default BasicAdapter.extend({
 
     window[name] = node;
 
-    this.get('namespace.port').send('view:inspectDOMNode', { name });
+    get(this, 'namespace.port').send('view:inspectDOMNode', { name });
   },
 
   _listen() {

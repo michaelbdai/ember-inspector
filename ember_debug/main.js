@@ -69,9 +69,9 @@ const EmberDebug = EmberObject.extend({
       return;
     }
     if (!this._application && !this.isTesting) {
-      this.set('_application', getApplication());
+      this._application = getApplication();
     }
-    this.set('started', true);
+    this.started = true;
 
     this.reset();
 
@@ -97,16 +97,16 @@ const EmberDebug = EmberObject.extend({
       'objectInspector',
       'session',
     ].forEach((prop) => {
-      let handler = this.get(prop);
+      let handler = this.prop;
       if (handler) {
         run(handler, 'destroy');
-        this.set(prop, null);
+        this[prop] = null;
       }
     });
   },
 
   startModule(prop, Module) {
-    this.set(prop, Module.create({ namespace: this }));
+    this[prop] = Module.create({ namespace: this });
   },
 
   willDestroy() {
@@ -116,7 +116,7 @@ const EmberDebug = EmberObject.extend({
 
   reset($keepAdapter) {
     if (!this.isTesting && !this.owner) {
-      this.set('owner', getOwner(this._application));
+      this.owner = getOwner(this._application);
     }
     this.destroyContainer();
     run(() => {
@@ -152,10 +152,8 @@ const EmberDebug = EmberObject.extend({
   },
 
   clear() {
-    this.setProperties({
-      _application: null,
-      owner: null,
-    });
+    this._application = null;
+    this.owner = null;
   },
 }).create();
 

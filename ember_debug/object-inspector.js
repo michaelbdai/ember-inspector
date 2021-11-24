@@ -14,7 +14,7 @@ import MutableArray from './utils/ember/array/mutable';
 import ArrayProxy from './utils/ember/array/proxy';
 import Component from './utils/ember/component';
 import { inspect as emberInspect } from './utils/ember/debug';
-import EmberObject, { computed, get, set } from './utils/ember/object';
+import EmberObject, { computed, get } from './utils/ember/object';
 import { oneWay } from './utils/ember/object/computed';
 import Observable from './utils/ember/object/observable';
 import Evented from './utils/ember/object/evented';
@@ -337,7 +337,7 @@ export default DebugPort.extend({
 
   init() {
     this._super();
-    this.set('sentObjects', {});
+    this.sentObjects = {};
     _backburner.on('end', bound(this, this.updateCurrentObject));
   },
 
@@ -397,15 +397,15 @@ export default DebugPort.extend({
       this.sendToConsole(message.objectId, message.property);
     },
     sendControllerToConsole(message) {
-      const container = this.get('namespace.owner');
+      const container = get(this, 'namespace.owner');
       this.sendValueToConsole(container.lookup(`controller:${message.name}`));
     },
     sendRouteHandlerToConsole(message) {
-      const container = this.get('namespace.owner');
+      const container = get(this, 'namespace.owner');
       this.sendValueToConsole(container.lookup(`route:${message.name}`));
     },
     sendContainerToConsole() {
-      const container = this.get('namespace.owner');
+      const container = get(this, 'namespace.owner');
       this.sendValueToConsole(container);
     },
     /**
@@ -414,7 +414,7 @@ export default DebugPort.extend({
      * @param {string} messsage.name The name of the route to lookup
      */
     inspectRoute(message) {
-      const container = this.get('namespace.owner');
+      const container = get(this, 'namespace.owner');
       const router = container.lookup('router:main');
       const routerLib = router._routerMicrolib || router.router;
       // 3.9.0 removed intimate APIs from router
@@ -429,7 +429,7 @@ export default DebugPort.extend({
       }
     },
     inspectController(message) {
-      const container = this.get('namespace.owner');
+      const container = get(this, 'namespace.owner');
       this.sendObject(container.lookup(`controller:${message.name}`));
     },
     inspectById(message) {
@@ -439,7 +439,7 @@ export default DebugPort.extend({
       }
     },
     inspectByContainerLookup(message) {
-      const container = this.get('namespace.owner');
+      const container = get(this, 'namespace.owner');
       this.sendObject(container.lookup(message.name));
     },
     traceErrors(message) {
@@ -468,7 +468,7 @@ export default DebugPort.extend({
 
   saveProperty(objectId, prop, val) {
     let object = this.sentObjects[objectId];
-    join(() => set(object, prop, val));
+    join(() => (object[prop] = val));
   },
 
   sendToConsole(objectId, prop) {

@@ -1,4 +1,4 @@
-import { action, computed, get } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
@@ -59,9 +59,7 @@ export default Controller.extend({
     return escapeRegExp(this.search.toLowerCase());
   }),
 
-  isHighlightEnabled: computed('model.isHighlightSupported', function () {
-    return get(this.model, 'isHighlightSupported');
-  }),
+  isHighlightEnabled: computed.reads('model.isHighlightSupported'),
 
   filtered: computed(
     'escapedSearch',
@@ -69,10 +67,10 @@ export default Controller.extend({
     'search',
     function () {
       if (isEmpty(this.escapedSearch)) {
-        return get(this.model, 'profiles');
+        return this.model.profiles;
       }
 
-      return get(this.model, 'profiles').filter((item) => {
+      return this.model.profiles.filter((item) => {
         const regExp = new RegExp(this.escapedSearch);
         return recursiveMatch(item, regExp);
       });
@@ -94,11 +92,11 @@ export default Controller.extend({
 
 function recursiveMatch(item, regExp) {
   let children, child;
-  let name = get(item, 'name');
+  let name = item.name;
   if (name.toLowerCase().match(regExp)) {
     return true;
   }
-  children = get(item, 'children');
+  children = item.children;
   for (let i = 0; i < children.length; i++) {
     child = children[i];
     if (recursiveMatch(child, regExp)) {
